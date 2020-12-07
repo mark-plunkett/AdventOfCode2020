@@ -30,19 +30,34 @@ let fastPart1 target ints =
         | Some v -> map, Some (i * v)
         | _ -> Map.add (target - i) i map, None
     ) (Map.empty, None)
-    |> Seq.pick snd
+    |> Seq.tryPick snd
+
+let fastPart2 target ints =
+    let sorted = 
+        ints
+        |> Seq.sort
+        |> Seq.indexed
+        |> Seq.cache
+    sorted
+    |> Seq.pick (fun (index, intValue) -> 
+        sorted
+        |> Seq.where (fun (innerIndex, _) -> innerIndex > index)
+        |> Seq.map snd
+        |> fastPart1 (target - intValue)
+        |> Option.map ((*) intValue)
+    )
 
 [<EntryPoint>]
 let main argv =
 
     let f = 
         Array.tryHead argv 
-        |> Option.defaultValue "p1"
+        |> Option.defaultValue "-p1"
         |> function
             | "-p1" -> naievePart1
             | "-p2" -> naievePart2
-            | "-fp1" -> fastPart1 2020
-            //| "fp2" -> fastPart2
+            | "-fp1" -> fastPart1 2020 >> Option.get
+            | "-fp2" -> fastPart2 2020
             | _ -> failwith "not supported"
 
     Seq.initInfinite (fun _ -> Console.ReadLine())
