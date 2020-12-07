@@ -23,18 +23,14 @@ let naievePart2 ints =
                     | _ -> () ]
     |> List.head
 
-let fastPart1 ints =
-    let map = 
-        ints
-        |> Seq.map (fun i -> 2020 - i, i)
-        |> dict
-
+let fastPart1 target ints =
     ints
-    |> Seq.pick (fun i -> 
-        match map.TryGetValue i with
-        | (true, v) -> Some (i * v)
-        | _ -> None
-    )
+    |> Seq.scan (fun (map, _) i ->
+        match Map.tryFind i map with
+        | Some v -> map, Some (i * v)
+        | _ -> Map.add (target - i) i map, None
+    ) (Map.empty, None)
+    |> Seq.pick snd
 
 [<EntryPoint>]
 let main argv =
@@ -43,15 +39,15 @@ let main argv =
         Array.tryHead argv 
         |> Option.defaultValue "p1"
         |> function
-            | "p1" -> naievePart1
-            | "p2" -> naievePart2
-            | "p1f" -> fastPart1
+            | "-p1" -> naievePart1
+            | "-p2" -> naievePart2
+            | "-fp1" -> fastPart1 2020
+            //| "fp2" -> fastPart2
             | _ -> failwith "not supported"
 
     Seq.initInfinite (fun _ -> Console.ReadLine())
     |> Seq.takeWhile (String.IsNullOrEmpty >> not)
     |> Seq.map int
-    |> Seq.toList
     |> f
     |> printfn "%i"
 
