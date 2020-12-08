@@ -50,7 +50,7 @@ let fastPart2 target ints =
 [<EntryPoint>]
 let main argv =
 
-    let f = 
+    let solve = 
         Array.tryHead argv 
         |> Option.defaultValue "-p1"
         |> function
@@ -63,7 +63,7 @@ let main argv =
     Seq.initInfinite (fun _ -> Console.ReadLine())
     |> Seq.takeWhile (String.IsNullOrEmpty >> not)
     |> Seq.map int
-    |> f
+    |> solve
     |> printfn "%i"
 
     0
