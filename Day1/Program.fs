@@ -41,7 +41,7 @@ let fastPart2 target ints =
     sorted
     |> Seq.pick (fun (index, intValue) -> 
         sorted
-        |> Seq.where (fun (innerIndex, _) -> innerIndex > index)
+        |> Seq.skip index
         |> Seq.map snd
         |> fastPart1 (target - intValue)
         |> Option.map ((*) intValue)
