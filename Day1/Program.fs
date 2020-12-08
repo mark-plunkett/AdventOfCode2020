@@ -28,7 +28,7 @@ let fastPart1 target ints =
     |> Seq.scan (fun (map, _) i ->
         match Map.tryFind i map with
         | Some v -> map, Some (i * v)
-        | _ -> Map.add (target - i) i map, None
+        | _ -> map.Add (target - i, i), None
     ) (Map.empty, None)
     |> Seq.tryPick snd
 
