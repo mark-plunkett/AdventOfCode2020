@@ -1,14 +1,16 @@
 open System
+
+let countTrees (grid:string[]) =
+    let modulo = grid.[0].Length
+    Seq.initInfinite
+    >> Seq.takeWhile (fun (_, y) -> y < grid.Length)
+    >> Seq.where (fun (x, y) -> grid.[y].[x % modulo] = '#')
+    >> Seq.length
     
 let solvePart1 (grid:string[]) =
-    let m = grid.[0].Length
-    Seq.initInfinite (fun i -> (i * 3) % m, i)
-    |> Seq.takeWhile (fun (_, y) -> y < grid.Length)
-    |> Seq.where (fun (x, y) -> grid.[y].[x] = '#')
-    |> Seq.length
+    countTrees grid (fun i -> (i * 3), i)
 
 let solvePart2 (grid:string[]) =
-    let m = grid.[0].Length
     [
         fun i -> i, i
         fun i -> i * 3, i
@@ -16,12 +18,7 @@ let solvePart2 (grid:string[]) =
         fun i -> i * 7, i
         fun i -> i, i * 2
     ]
-    |> Seq.map (
-        Seq.initInfinite
-        >> Seq.takeWhile (fun (_, y) -> y < grid.Length)
-        >> Seq.where (fun (x, y) -> grid.[y].[x % m] = '#')
-        >> Seq.length
-    )
+    |> Seq.map (countTrees grid)
     |> Seq.reduce (*)
     
 [<EntryPoint>]
