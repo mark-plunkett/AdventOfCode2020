@@ -8,7 +8,8 @@ let countTrees (grid:string[]) =
     >> Seq.length
     
 let solvePart1 (grid:string[]) =
-    countTrees grid (fun i -> (i * 3), i)
+    fun i -> (i * 3), i
+    |> countTrees grid 
 
 let solvePart2 (grid:string[]) =
     [
